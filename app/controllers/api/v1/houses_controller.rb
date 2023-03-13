@@ -1,4 +1,7 @@
 class Api::V1::HousesController < ApplicationController
+  before_action :set_house, only: %i[show destroy]
+  before_action :set_user, only: %i[create destroy]
+
   def index
     @houses = House.all.order(:id)
     render json: @houses.map { |house|

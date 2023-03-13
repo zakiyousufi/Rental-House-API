@@ -1,32 +1,22 @@
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
-  get 'appointments/index'
-  get 'appointments/show'
-  get 'appointments/new'
-  post 'appointments/create'
-  get 'houses/index'
-  get 'houses/show'
-  get 'houses/new'  
-  get 'houses/create'
-  get 'houses/destroy'
-  devise_for :users
-
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :houses
-  resources :users
-  # resources :appointments, %i[index new show create]
-  # Defines the root path route ("/")
-  root to: 'houses#index'
-
+  devise_for :users, path: '', path_names: {
+                                 sign_in: 'login',
+                                 sign_out: 'logout',
+                                 registration: 'signup'
+                               },
+                     controllers: {
+                       sessions: 'users/sessions',
+                       registrations: 'users/registrations'
+                     }
   namespace :api do
     namespace :v1 do
-      post 'users/login'
-      post 'users/register'
-      get 'users/index'
-      
-      resources :appointments
-      resources :houses
+      resources :current_user, only: [:index]
+      resources :reservations, only: [:index, :destroy]
+      resources :houses, only: [:index, :show, :new, :create, :destroy] do
+        resources :reservations , only: [:create]
+      end
     end
   end
 end

@@ -28,8 +28,8 @@ default: &default
 
 development:
   <<: *default
-  database: dream_rent_api_development
-
+  database: rental-app_api_development
+  port: 5433
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
@@ -62,8 +62,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: dream_rent_api_test
-
+  database: rental-app_api_test
+  port: 5433
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -86,6 +86,6 @@ test:
 #
 production:
   <<: *default
-  database: dream_rent_api_production
-  username: dream_rent_api
-  password: <%= ENV["DREAM_RENT_API_DATABASE_PASSWORD"] %>
+  database: rental-app_api_production
+  username: rental-app_api
+  password: <%= ENV["RENTAL_APP_API_DATABASE_PASSWORD"] %>

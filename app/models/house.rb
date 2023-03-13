@@ -1,5 +1,6 @@
-class House < ApplicationRecord
-  has_many :appointments
+class Room < ApplicationRecord
+  belongs_to :user
+  has_many :reservations, dependent: :destroy
   has_one_attached :image
 
   validates :balcony, inclusion: { in: [true, false] }

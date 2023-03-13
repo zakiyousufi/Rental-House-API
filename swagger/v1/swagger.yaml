@@ -3,250 +3,221 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
+components:
+  securitySchemes:
+    Bearer:
+      description: JWT key necessary to use API calls
+      type: apiKey
+      name: Authorization
+      in: header
 paths:
-  "/appointments":
+  "/signup":
     post:
-      summary: Creates an appointment
+      summary: Creates a user account to generate a token
       tags:
-      - Appointments
-      parameters: []
-      responses:
-        '201':
-          description: appointment created
-        '422':
-          description: invalid request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                time:
-                  type: string
-                visitors:
-                  type: integer
-                user_id:
-                  type: integer
-                house_id:
-                  type: integer
-              required:
-              - date
-              - time
-              - visitors
-              - user_id
-              - house_id
-          application/xml:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                time:
-                  type: string
-                visitors:
-                  type: integer
-                user_id:
-                  type: integer
-                house_id:
-                  type: integer
-              required:
-              - date
-              - time
-              - visitors
-              - user_id
-              - house_id
-  "/houses":
-    post:
-      summary: Creates a house
-      tags:
-      - Houses
-      parameters: []
-      responses:
-        '201':
-          description: house created
-        '422':
-          description: invalid request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                price:
-                  type: integer
-                address:
-                  type: string
-                user_id:
-                  type: integer
-              required:
-              - name
-              - description
-              - price
-              - address
-              - user_id
-          application/xml:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                price:
-                  type: integer
-                address:
-                  type: string
-                user_id:
-                  type: integer
-              required:
-              - name
-              - description
-              - price
-              - address
-              - user_id
-  "/houses/{id}":
-    get:
-      summary: Retrieves a house
-      tags:
-      - Houses
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: house found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  price:
-                    type: integer
-                  address:
-                    type: string
-                  user_id:
-                    type: integer
-                required:
-                - id
-                - name
-                - description
-                - price
-                - address
-                - user_id
-            application/xml:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  description:
-                    type: string
-                  price:
-                    type: integer
-                  address:
-                    type: string
-                  user_id:
-                    type: integer
-                required:
-                - id
-                - name
-                - description
-                - price
-                - address
-                - user_id
-        '404':
-          description: house not found
-        '406':
-          description: unsupported accept header
-  "/users":
-    post:
-      summary: creates a user
-      tags:
-      - Users
+      - User Authentication
+      security:
+      - Bearer: []
       parameters: []
       responses:
         '201':
           description: user created
-        '422':
-          description: invalid request
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                name:
-                  type: string
+                user:
+                  type: object
+                  properties:
+                    f_name:
+                      type: string
+                    avatar:
+                      type: string
+                    password:
+                      type: string
+                    username:
+                      type: string
+                    email:
+                      type: string
               required:
               - name
-          application/xml:
+              - email
+              - password
+  "/login":
+    post:
+      summary: You need to sign in so the servers can autenticate you
+      tags:
+      - User Authentication
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: User logged in successfully
+        '401':
+          description: Logged in failure
+      requestBody:
+        content:
+          application/json:
             schema:
               type: object
               properties:
-                name:
+                email:
+                  type: string
+                password:
                   type: string
               required:
-              - name
-  "/users/{id}":
+              - email
+              - password
+  "/api/v1/reservations":
     get:
-      summary: Retrieves a user
+      summary: list reservations
       tags:
-      - Users
+      - Reservation
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: successful
+  "/api/v1/reservations/{id}":
+    delete:
+      summary: delete reservation
+      tags:
+      - Reservation
+      security:
+      - Bearer: []
       parameters:
       - name: id
         in: path
+        description: id
         required: true
         schema:
           type: string
       responses:
         '200':
-          description: user found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                required:
-                - id
-                - name
-            application/xml:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                required:
-                - id
-                - name
-        '404':
-          description: user not found
-        '406':
-          description: unsupported accept header
+          description: successful
+  "/api/v1/rooms/{room_id}/reservations":
+    post:
+      summary: create reservation
+      tags:
+      - Reservation
+      security:
+      - Bearer: []
+      parameters:
+      - name: room_id
+        in: path
+        description: room_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reservation:
+                  type: object
+                  properties:
+                    from_date:
+                      type: string
+                      format: date
+                    to_date:
+                      type: string
+                      format: date
+                    number_of_persons:
+                      type: number
+              required:
+              - from_date
+              - to_date
+              - number_of_persons
+  "/api/v1/rooms":
+    get:
+      summary: List all available rooms
+      tags:
+      - Room
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: Rooms Successfully fetched
+    post:
+      summary: Create a room
+      tags:
+      - Room
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '201':
+          description: room created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    beds:
+                      type: number
+                    price:
+                      type: number
+                    description:
+                      type: string
+                    image:
+                      type: string
+                    city:
+                      type: string
+              required:
+              - name
+              - beds
+              - price
+              - image
+              - city
+  "/api/v1/rooms/{id}":
+    get:
+      summary: show room
+      tags:
+      - Room
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+    delete:
+      summary: delete room
+      tags:
+      - Room
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
 servers:
-- url: https://{defaultHost}
+- url: https://cherry-room-service.onrender.com/
   variables:
     defaultHost:
-      default: www.example.com
+      default: https://cherry-room-service.onrender.com/
